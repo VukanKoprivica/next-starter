@@ -18,6 +18,6 @@ jobs:
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build -t next-starter
+      run: docker build -t next-starter .
     - name: Push Docker image
       run: docker push vukankoprivica35/next-starter:latest

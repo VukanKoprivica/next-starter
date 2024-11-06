@@ -20,7 +20,7 @@ jobs:
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::692859937432:user/deploy-user
+          role-to-assume: arn:aws:iam::692859937432:role/service-role/codebuild-next-starter-service-role
           aws-region: us-east-1
 
       - name: Set up CodeBuild

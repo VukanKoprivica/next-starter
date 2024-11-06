@@ -1,0 +1,66 @@
+version: 0.2
+
+env:
+  variables:
+    DOCKER_IMAGE_NAME: next-starter
+    DOCKER_HUB_USERNAME: vukankoprivica35
+    AWS_REGION: us-east-1
+    EC2_INSTANCE_PUBLIC_IP: http://35.158.26.108
+    EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }} 
+    DOCKER_IMAGE_TAG: latest
+
+phases:
+  install:
+    runtime-versions:
+      docker: 20
+    commands:
+      # Install AWS CLI if it's not installed already
+      - echo Installing AWS CLI
+      - pip install --upgrade awscli
+
+  pre_build:
+    commands:
+      # Log into Docker Hub
+      - echo Logging into Docker Hub
+      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+      
+      # Authenticate AWS CLI using IAM credentials (from GitHub Secrets or AWS environment)
+      - echo Configuring AWS credentials
+      - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+      - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+      - aws configure set region $AWS_REGION
+
+  build:
+    commands:
+      # Build the Docker image
+      - echo Building Docker image
+      - docker build -t $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
+      
+      # Push the Docker image to Docker Hub
+      - echo Pushing Docker image to Docker Hub
+      - docker push $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+
+  post_build:
+   commands:
+      # Set up the SSH private key from GitHub secrets
+      - echo Setting up SSH key for EC2 access
+      - echo "$EC2_SSH_KEY" > ec2-key.pem
+      - chmod 600 ec2-key.pem
+
+      # SSH into EC2 and run the Docker container
+      - echo SSHing into EC2 instance and running Docker container
+      - |
+        ssh -i ec2-key.pem ec2-user@$EC2_INSTANCE_PUBLIC_IP <<EOF
+          docker pull $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+          docker stop $(docker ps -q --filter "ancestor=$DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NAME")
+          docker run -d -p 3000:3000 $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+        EOF
+  # If you'd like to add a deploy phase, add it here
+  deploy:
+    commands:
+      - echo Deployment completed successfully.
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes

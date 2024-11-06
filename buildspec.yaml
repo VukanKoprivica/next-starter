@@ -4,6 +4,7 @@ env:
   variables:
     DOCKER_IMAGE_NAME: next-starter
     DOCKER_HUB_USERNAME: vukankoprivica35
+    DOCKER_HUB_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
     AWS_REGION: us-east-1
     EC2_INSTANCE_PUBLIC_IP: http://35.158.26.108
     EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }} 
@@ -22,7 +23,7 @@ phases:
     commands:
       # Log into Docker Hub
       - echo Logging into Docker Hub
-      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
       
       # Authenticate AWS CLI using IAM credentials (from GitHub Secrets or AWS environment)
       - echo Configuring AWS credentials

@@ -6,7 +6,7 @@ env:
     DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
     DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
     AWS_REGION: us-east-1
-    EC2_INSTANCE_PUBLIC_IP: ec2-35-158-26-108.eu-central-1.compute.amazonaws.com
+    EC2_INSTANCE_PUBLIC_IP: ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com
     EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }} 
     DOCKER_IMAGE_TAG: latest
     $AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
@@ -23,10 +23,7 @@ phases:
 
   pre_build:
     commands:
-      # Log into Docker Hub
-      - echo Logging into Docker Hub
-      - echo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
-      
+     
       # Authenticate AWS CLI using IAM credentials (from GitHub Secrets or AWS environment)
       - echo Configuring AWS credentials
       - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
@@ -35,6 +32,11 @@ phases:
       
   build:
     commands:
+ # Log into Docker Hub
+      - echo Logging into Docker Hub
+      - echo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
+      
+
       # Build the Docker image
       - echo Building Docker image
       - docker build -t vukankoprivica35/next-starter:latest .
@@ -50,11 +52,12 @@ phases:
       - touch ec2-key.pem
       - echo $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
+      - cat ec2-key.pem
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container
       - |
-        ssh -i ec2-key.pem -T ubuntu@$EC2_INSTANCE_PUBLIC_IP <<EOF
+        ssh -i ec2-key.pem -T $EC2_INSTANCE_PUBLIC_IP <<EOF
           docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
           docker stop $(docker ps -q --filter "ancestor=$DOCKER_USERNAME/$DOCKER_IMAGE_NAME")
           docker run -d -p 3000:3000 $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG

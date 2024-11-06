@@ -25,7 +25,7 @@ phases:
     commands:
       # Log into Docker Hub
       - echo Logging into Docker Hub
-      - echo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - echo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
       
       # Authenticate AWS CLI using IAM credentials (from GitHub Secrets or AWS environment)
       - echo Configuring AWS credentials
@@ -37,26 +37,27 @@ phases:
     commands:
       # Build the Docker image
       - echo Building Docker image
-      - sudo docker build -t vukankoprivica35/next-starter:latest .
+      - docker build -t vukankoprivica35/next-starter:latest .
       
       # Push the Docker image to Docker Hub
       - echo Pushing Docker image to Docker Hub
-      - sudo docker push vukankoprivica35/next-starter:latest
+      - docker push vukankoprivica35/next-starter:latest 
 
   post_build:
    commands:
       # Set up the SSH private key from GitHub secrets
       - echo Setting up SSH key for EC2 access
-      - echo "$EC2_SSH_KEY" > ec2-key.pem
+      - touch ec2-key.pem
+      - echo $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container
       - |
         ssh -i ec2-key.pem -T ubuntu@$EC2_INSTANCE_PUBLIC_IP <<EOF
-          sudo docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
-          sudo docker stop $(docker ps -q --filter "ancestor=$DOCKER_USERNAME/$DOCKER_IMAGE_NAME")
-          sudo docker run -d -p 3000:3000 $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+          docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+          docker stop $(docker ps -q --filter "ancestor=$DOCKER_USERNAME/$DOCKER_IMAGE_NAME")
+          docker run -d -p 3000:3000 $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
         EOF
 
 artifacts:

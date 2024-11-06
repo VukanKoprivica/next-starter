@@ -1,0 +1,38 @@
+import axios, { AxiosResponse } from "axios";
+import { GetStaticProps } from "next";
+import React from "react";
+import { itemType } from "../cs/[id]";
+import Image from "next/image";
+
+interface PageProps {
+  result: itemType;
+}
+
+export default function index({ result }: PageProps) {
+  return (
+    <div className="flex flex-col gap-2 items-center pt-20">
+      <span> Id: {result?.id} </span>
+      <span>Name: {result?.title} </span>
+      <span>Render mode: SSR</span>
+      <Image
+        src={result?.image ?? ""}
+        alt=""
+        width={500}
+        height={500}
+        priority
+      />
+    </div>
+  );
+}
+
+export const getServerSideProps: GetStaticProps = async (context) => {
+  const { id } = context.params!; // Retrieve the id from the URL
+
+  const props = await axios
+    .get(`https://coruscating-hotteok-f9463e.netlify.app/api/${id}`)
+    .then((response: AxiosResponse<itemType>) => response.data);
+
+  return {
+    props,
+  };
+};

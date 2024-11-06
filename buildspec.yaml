@@ -52,7 +52,7 @@ phases:
       - touch ec2-key.pem
       - echo $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
-      - cat ec2-key.pem
+      - ssh-keyscan -H $EC2_INSTANCE_PUBLIC_IP >> ~/.ssh/known_hosts
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container

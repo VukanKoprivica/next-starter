@@ -55,10 +55,6 @@ phases:
           docker stop $(docker ps -q --filter "ancestor=$DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NAME")
           docker run -d -p 3000:3000 $DOCKER_HUB_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
         EOF
-  # If you'd like to add a deploy phase, add it here
-  deploy:
-    commands:
-      - echo Deployment completed successfully.
 
 artifacts:
   files:

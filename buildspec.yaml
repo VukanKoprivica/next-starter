@@ -10,7 +10,7 @@ env:
     EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }} 
     DOCKER_IMAGE_TAG: latest
     $AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-    $AWS_SECRET_ACCESS_KEY: {{secrets.AWS_SECRET_ACCESS_KEY}}
+    $AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 phases:
   install:

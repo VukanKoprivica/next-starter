@@ -38,6 +38,8 @@ phases:
       # Build the Docker image
       - echo Building Docker image
       - docker build -t vukankoprivica35/next-starter:latest .
+
+      - docker images
       
       - docker tag next-starter:latest vukankoprivica35/next-starter:latest
 
@@ -52,11 +54,11 @@ phases:
       - touch ec2-key.pem
       - echo $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
-      - ssh-keyscan -H $EC2_INSTANCE_PUBLIC_IP >> ~/.ssh/known_hosts
+      - ssh-keyscan -H ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com >> ~/.ssh/known_hosts
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container
-      - ssh -v -i ec2-key.pem -T ec2-user@$EC2_INSTANCE_PUBLIC_IP <<EOF
+      - ssh -v -i ec2-key.pem -T ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com <<EOF
           sudo docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
           sudo docker stop $(sudo docker ps -q --filter "ancestor=$DOCKER_USERNAME/$DOCKER_IMAGE_NAME")
           sudo docker run -d -p 3000:3000 $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG

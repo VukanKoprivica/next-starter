@@ -59,6 +59,7 @@ phases:
       - ls -l ec2-key.pem # Check if file was created
       - file ec2-key.pem
       - cat ec2-key.pem
+      - ssh-add ec2-key.pem
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container

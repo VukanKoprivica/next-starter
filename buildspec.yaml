@@ -43,6 +43,9 @@ phases:
 
       - docker tag vukankoprivica35/next-starter  vukankoprivica35/next-starter:latest
 
+
+      - echo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
+
       # Push the Docker image to Docker Hub
       - echo Pushing Docker image to Docker Hub
       - sudo docker push vukankoprivica35/next-starter:latest 
@@ -54,6 +57,7 @@ phases:
       - touch ec2-key.pem
       - echo $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
+      - eval "$(ssh-agent -s)"
       - ssh-add ec2-key.pem
       - ssh-add -l
       - ssh-keyscan -H https://ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com >> ~/.ssh/known_hosts

@@ -43,18 +43,17 @@ phases:
 
       - docker tag vukankoprivica35/next-starter  vukankoprivica35/next-starter:latest
 
-
+      - echo docker logout
       - echo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
 
       # Push the Docker image to Docker Hub
       - echo Pushing Docker image to Docker Hub
-      - sudo docker push vukankoprivica35/next-starter:latest 
+      - sudo docker push docker.io/vukankoprivica35/next-starter:latest 
 
   post_build:
    commands:
       # Set up the SSH private key from GitHub secrets
       - echo Setting up SSH key for EC2 access
-      - touch ec2-key.pem
       - echo $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
       - eval "$(ssh-agent -s)"

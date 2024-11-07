@@ -7,7 +7,7 @@ env:
     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     AWS_REGION: us-east-1
     EC2_INSTANCE_PUBLIC_IP: ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com
-    EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }} 
+    EC2_SSH_KEY: ${{secrets.EC2_SSH_KEY}} 
     DOCKER_IMAGE_TAG: latest
     $AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     $AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -20,6 +20,8 @@ phases:
       # Install AWS CLI if it's not installed already
       - echo Installing AWS CLI
       - pip install --upgrade awscli
+      - echo "Fetching secrets from AWS Secrets Manager..."
+      - export MY_SECRET_KEY=$(aws secretsmanager get-secret-value --secret-id /myproject/github_token --query SecretString --output text | jq -r '.MY_SECRET_KEY')
 
   pre_build:
     commands:
@@ -51,8 +53,8 @@ phases:
    commands:
       # Set up the SSH private key from GitHub secrets
       - echo Setting up SSH key for EC2 access
-      - $EC2_SSH_KEY > ~/.ssh/known_hosts
-      - $EC2_SSH_KEY > ec2-key.pem
+      - $MY_SECRET_KEY > ~/.ssh/known_hosts
+      - $MY_SECRET_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
       - eval "$(ssh-agent -s)"
 

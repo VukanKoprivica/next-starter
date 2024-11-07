@@ -58,10 +58,11 @@ phases:
       - eval "$(ssh-agent -s)"
       - ls -l ec2-key.pem # Check if file was created
       - file ec2-key.pem
+      - cat ec2-key.pem
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container
-      - ssh -v -i ec2-key.pem -T -o StrictHostKeyChecking=no https://ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com <<EOF
+      - ssh -v -i ec2-key.pem -T -o StrictHostKeyChecking=no ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com <<EOF
           sudo docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
           sudo docker stop $(sudo docker ps -q --filter "ancestor=$DOCKER_USERNAME/$DOCKER_IMAGE_NAME")
           sudo docker run -d -p 3000:3000 $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG

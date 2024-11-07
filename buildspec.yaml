@@ -54,9 +54,9 @@ phases:
       # Set up the SSH private key from GitHub secrets
       - echo Setting up SSH key for EC2 access
       - echo $MY_SECRET_KEY > ec2-key.pem
-      - echo "$MY_SECRET_KEY" | ssh-add -
       - chmod 400 ec2-key.pem
       - eval "$(ssh-agent -s)"
+      - echo "$MY_SECRET_KEY" | ssh-add -
       - ls -l ec2-key.pem # Check if file was created
       - file ec2-key.pem
       - cat ec2-key.pem

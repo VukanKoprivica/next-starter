@@ -3,13 +3,13 @@ version: 0.2
 env:
   variables:
     DOCKER_IMAGE_NAME: next-starter
-    DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-    DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     AWS_REGION: us-east-1
     EC2_INSTANCE_PUBLIC_IP: ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com
     EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }} 
     DOCKER_IMAGE_TAG: latest
-    $AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+    $AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     $AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 phases:
@@ -25,7 +25,7 @@ phases:
     commands:
       # Log into Docker Hub
       - echo Logging into Docker Hub
-      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
+      - docker login -u vukankoprivica35 -p Durantula35@
       
       # Authenticate AWS CLI using IAM credentials (from GitHub Secrets or AWS environment)
       - echo Configuring AWS credentials
@@ -51,8 +51,8 @@ phases:
    commands:
       # Set up the SSH private key from GitHub secrets
       - echo Setting up SSH key for EC2 access
-      - echo $EC2_SSH_KEY > ~/.ssh/known_hosts
-      - echo $EC2_SSH_KEY > ec2-key.pem
+      - $EC2_SSH_KEY > ~/.ssh/known_hosts
+      - $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
       - eval "$(ssh-agent -s)"
 

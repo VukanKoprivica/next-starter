@@ -25,7 +25,7 @@ phases:
     commands:
       # Log into Docker Hub
       - echo Logging into Docker Hub
-      - echo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
       
       # Authenticate AWS CLI using IAM credentials (from GitHub Secrets or AWS environment)
       - echo Configuring AWS credentials
@@ -43,9 +43,6 @@ phases:
 
       - docker tag vukankoprivica35/next-starter  vukankoprivica35/next-starter:latest
 
-      - echo docker logout
-      - echo docker login -u vukankoprivica35 -p Durantula35@ 
-
       # Push the Docker image to Docker Hub
       - echo Pushing Docker image to Docker Hub
       - sudo docker push docker.io/vukankoprivica35/next-starter:latest 
@@ -58,8 +55,6 @@ phases:
       - echo $EC2_SSH_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
       - eval "$(ssh-agent -s)"
-      - ssh-add -l
-      - ssh-keyscan -H https://ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com >> ~/.ssh/known_hosts
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container

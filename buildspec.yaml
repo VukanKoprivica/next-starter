@@ -53,19 +53,11 @@ phases:
    commands:
       # Set up the SSH private key from GitHub secrets
       - echo Setting up SSH key for EC2 access
-      - echo $MY_SECRET_KEY > ec2-key.pem
-      - chmod 400 ec2-key.pem
       - eval "$(ssh-agent -s)"
-      - echo "$MY_SECRET_KEY" | ssh-add -
-      - ls -l ec2-key.pem # Check if file was created
-      - file ec2-key.pem
-      - cat ec2-key.pem
-      - ssh-add ec2-key.pem
-      - ssh-keygen -p -f ec2-key.pem -m PEM
-
+     
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container
-      - ssh -v -i ec2-key.pem -T -o StrictHostKeyChecking=no ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com <<EOF
+      - ssh -v -i $MY_SECRET_KEY -T -o StrictHostKeyChecking=no ubuntu@ec2-35-158-26-108.eu-central-1.compute.amazonaws.com <<EOF
           sudo docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
           sudo docker stop $(sudo docker ps -q --filter "ancestor=$DOCKER_USERNAME/$DOCKER_IMAGE_NAME")
           sudo docker run -d -p 3000:3000 $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG

@@ -53,10 +53,11 @@ phases:
    commands:
       # Set up the SSH private key from GitHub secrets
       - echo Setting up SSH key for EC2 access
-      - $MY_SECRET_KEY > ~/.ssh/known_hosts
-      - $MY_SECRET_KEY > ec2-key.pem
+      - echo $MY_SECRET_KEY > ec2-key.pem
       - chmod 400 ec2-key.pem
       - eval "$(ssh-agent -s)"
+      - ls -l ec2-key.pem # Check if file was created
+      - file ec2-key.pem
 
       # SSH into EC2 and run the Docker container
       - echo SSHing into EC2 instance and running Docker container

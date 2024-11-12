@@ -1,2 +1,20 @@
+name: Deploy next-starter application
 
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Build docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/next-starter .
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
+      - name: Publisch image to docker hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/next-starter:latest
 

@@ -5,19 +5,15 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY . /app/
 
 # Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Build the Next.js app
-RUN npm run build
+RUN npm install -g pnpm@8.8.0 && \
+    pnpm i --frozen-lockfile && \
+    pnpm build
 
 # Expose the port the app will run on
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]

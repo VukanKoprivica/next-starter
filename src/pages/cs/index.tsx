@@ -9,7 +9,7 @@ export default function CS() {
 
   const fetchData = async () => {
     const data = await axios
-      .get("https://coruscating-hotteok-f9463e.netlify.app/api/all")
+      .get("http://ec2-18-156-121-203.eu-central-1.compute.amazonaws.com:3000/api/all")
       .then(
         (
           response: AxiosResponse<{
@@ -32,7 +32,7 @@ export default function CS() {
         props?.map((value) => (
           <Link
             key={value.id}
-            href={`https://coruscating-hotteok-f9463e.netlify.app/cs/${value.id}`}
+            href={`http://ec2-18-156-121-203.eu-central-1.compute.amazonaws.com:3000/cs/${value.id}`}
           >
             {value.id} CS
           </Link>

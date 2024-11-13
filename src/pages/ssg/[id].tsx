@@ -29,7 +29,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const { id } = context.params!; // Retrieve the id from the URL
 
   const props = await axios
-    .get(`https://coruscating-hotteok-f9463e.netlify.app/api/${id}`)
+    .get(`http://ec2-18-156-121-203.eu-central-1.compute.amazonaws.com:3000/api/${id}`)
     .then((response: AxiosResponse<itemType>) => response.data);
 
   return {
@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths = async () => {
   const paths = await axios
-    .get("https://coruscating-hotteok-f9463e.netlify.app/api/all")
+    .get("http://ec2-18-156-121-203.eu-central-1.compute.amazonaws.com:3000/api/all")
     .then(
       (
         response: AxiosResponse<{

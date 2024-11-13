@@ -17,7 +17,7 @@ export default function index() {
 
   const fetchData = (id: string) => {
     axios
-      .get(`https://coruscating-hotteok-f9463e.netlify.app/api/${id}`)
+      .get(`http://ec2-18-156-121-203.eu-central-1.compute.amazonaws.com:3000/api/${id}`)
       .then((response: AxiosResponse<{ result: itemType }>) => {
         setProps(response.data.result);
         setLoading(false);

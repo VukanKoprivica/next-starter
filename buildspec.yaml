@@ -27,7 +27,7 @@ phases:
     commands:
       # Log into Docker Hub
       - echo Logging into Docker Hub
-      - docker login -u vukankoprivica35 -p Durantula35@
+      - docker login -u vukankoprivica35 -p $DOCKER_PASSWORD
       
       # Authenticate AWS CLI using IAM credentials (from GitHub Secrets or AWS environment)
       - echo Configuring AWS credentials
@@ -40,11 +40,6 @@ phases:
       # Build the Docker image
       - echo Building Docker image
       - docker build -t vukankoprivica35/next-starter:latest .
-
-      - docker images
-
-      - docker tag vukankoprivica35/next-starter  vukankoprivica35/next-starter:latest
-
       # Push the Docker image to Docker Hub
       - echo Pushing Docker image to Docker Hub
       - sudo docker push docker.io/vukankoprivica35/next-starter:latest 
